@@ -1,89 +1,67 @@
-import * as React from "react"
-import { Link, graphql } from "gatsby"
-
-import Bio from "../components/bio"
-import Layout from "../components/layout"
-import Seo from "../components/seo"
-
-const BlogIndex = ({ data, location }) => {
-  const siteTitle = data.site.siteMetadata?.title || `Title`
-  const posts = data.allMarkdownRemark.nodes
-
-  if (posts.length === 0) {
-    return (
-      <Layout location={location} title={siteTitle}>
-        <Seo title="All posts" />
-        <Bio />
-        <p>
-          No blog posts found. Add markdown posts to "content/blog" (or the
-          directory you specified for the "gatsby-source-filesystem" plugin in
-          gatsby-config.js).
-        </p>
-      </Layout>
-    )
-  }
-
-  return (
-    <Layout location={location} title={siteTitle}>
-      <Seo title="All posts" />
-      <Bio />
-      <ol style={{ listStyle: `none` }}>
-        {posts.map(post => {
-          const title = post.frontmatter.title || post.fields.slug
-
-          return (
-            <li key={post.fields.slug}>
-              <article
-                className="post-list-item"
-                itemScope
-                itemType="http://schema.org/Article"
-              >
-                <header>
-                  <h2>
-                    <Link to={post.fields.slug} itemProp="url">
-                      <span itemProp="headline">{title}</span>
-                    </Link>
-                  </h2>
-                  <small>{post.frontmatter.date}</small>
-                </header>
-                <section>
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: post.frontmatter.description || post.excerpt,
-                    }}
-                    itemProp="description"
-                  />
-                </section>
-              </article>
-            </li>
-          )
-        })}
-      </ol>
-    </Layout>
-  )
+var width = $(window).width(); 
+window.onscroll = function(){
+if ((width >= 1000)){
+    if(document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
+        $("#header").css("background","#fff");
+        $("#header").css("color","#000");
+        $("#header").css("box-shadow","0px 0px 20px rgba(0,0,0,0.09)");
+        $("#header").css("padding","4vh 4vw");
+        $("#navigation a").hover(function(){
+            $(this).css("border-bottom","2px solid rgb(255, 44, 90)");
+        },function(){
+            $(this).css("border-bottom","2px solid transparent");
+        });
+    }else{
+        $("#header").css("background","transparent");
+        $("#header").css("color","#fff");
+        $("#header").css("box-shadow","0px 0px 0px rgba(0,0,0,0)");
+        $("#header").css("padding","6vh 4vw");
+        $("#navigation a").hover(function(){
+            $(this).css("border-bottom","2px solid #fff");
+        },function(){
+            $(this).css("border-bottom","2px solid transparent");
+        });
+    }
+}
 }
 
-export default BlogIndex
+function magnify(imglink){
+    $("#img_here").css("background",`url('${imglink}') center center`);
+    $("#magnify").css("display","flex");
+    $("#magnify").addClass("animated fadeIn");
+    setTimeout(function(){
+        $("#magnify").removeClass("animated fadeIn");
+    },800);
+}
 
-export const pageQuery = graphql`
-  query {
-    site {
-      siteMetadata {
-        title
-      }
-    }
-    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
-      nodes {
-        excerpt
-        fields {
-          slug
-        }
-        frontmatter {
-          date(formatString: "MMMM DD, YYYY")
-          title
-          description
-        }
-      }
-    }
-  }
-`
+function closemagnify(){
+    $("#magnify").addClass("animated fadeOut");
+    setTimeout(function(){
+        $("#magnify").css("display","none");
+        $("#magnify").removeClass("animated fadeOut");
+        $("#img_here").css("background",`url('') center center`);
+    },800);
+}
+
+setTimeout(function(){
+    $("#loading").addClass("animated fadeOut");
+    setTimeout(function(){
+      $("#loading").removeClass("animated fadeOut");
+      $("#loading").css("display","none");
+    },800);
+},1650);
+
+$(document).ready(function(){
+    $("a").on('click', function(event) {
+      if (this.hash !== "") {
+        event.preventDefault();
+        var hash = this.hash;
+        $('body,html').animate({
+        scrollTop: $(hash).offset().top
+        }, 1800, function(){
+        window.location.hash = hash;
+       });
+       } 
+      });
+  });
+  
